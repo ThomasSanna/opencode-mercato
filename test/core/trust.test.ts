@@ -22,7 +22,7 @@ describe("bestTrust", () => {
   });
 
   test("ties keep the first occurrence", () => {
-    expect(bestTrust([prov("ecosystem", 15, "medium"), prov("awesome", 20, "medium")]))
+    expect(bestTrust([prov("ecosystem", 20, "medium"), prov("awesome", 20, "medium")]))
       .toEqual({ level: "medium", score: 20 });
   });
 
