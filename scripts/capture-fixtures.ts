@@ -42,10 +42,12 @@ async function main(): Promise<void> {
     headers: { "content-type": "application/json" },
     body: JSON.stringify(CAFE_POST),
   })) as { status: string; value?: unknown };
-  writeFileSync(join(OUT, "cafe.json"), JSON.stringify({ status: cafe.status, value: trimArray(Array.isArray(cafe.value) ? cafe.value : [], "type") }, null, 2));
+  if (cafe.status !== "success" || !Array.isArray(cafe.value)) throw new Error("cafe: unexpected payload shape");
+  writeFileSync(join(OUT, "cafe.json"), JSON.stringify({ status: cafe.status, value: trimArray(cafe.value, "type") }, null, 2));
 
-  const awesome = (await fetchJson("https://raw.githubusercontent.com/awesome-opencode/awesome-opencode/main/dist/registry.json")) as unknown[];
-  writeFileSync(join(OUT, "awesome.json"), JSON.stringify(trimArray(Array.isArray(awesome) ? awesome : [], "type"), null, 2));
+  const awesome = (await fetchJson("https://raw.githubusercontent.com/awesome-opencode/awesome-opencode/main/dist/registry.json")) as unknown;
+  if (!Array.isArray(awesome)) throw new Error("awesome: unexpected payload shape");
+  writeFileSync(join(OUT, "awesome.json"), JSON.stringify(trimArray(awesome, "type"), null, 2));
 
   const ecoRes = await fetch("https://raw.githubusercontent.com/anomalyco/opencode/dev/packages/web/src/content/docs/ecosystem.mdx");
   if (!ecoRes.ok) throw new Error(`HTTP ${ecoRes.status} from ecosystem`);

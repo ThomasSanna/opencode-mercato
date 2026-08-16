@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -75,7 +75,7 @@ describe("isFresh", () => {
 describe("atomicity", () => {
   test("no leftover tmp files after save", () => {
     saveCache(sample(), dir);
-    const leftovers = readFileSync(cachePath(dir), "utf8");
-    expect(leftovers.length).toBeGreaterThan(0);
+    const leftovers = readdirSync(dir).filter((f) => f.endsWith(".tmp"));
+    expect(leftovers).toEqual([]);
   });
 });

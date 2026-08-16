@@ -54,7 +54,6 @@ describe("normalizeCafe", () => {
     const items = normalizeCafe(CAFE_RAW, 1000);
     expect(items.map((i) => i.rawId)).toEqual(["c1", "c2", "c3"]);
     expect(items.map((i) => i.name)).not.toContain("");
-    expect(items.map((i) => i.rawId)).not.toContain("p-empty");
     expect(items[0]).toMatchObject({
       source: "cafe", kind: "plugin", name: "P One", description: "A",
       repoUrl: "https://github.com/me/p1", npmSpec: null, tags: ["x"], fetchedAt: 1000,
