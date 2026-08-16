@@ -48,7 +48,7 @@ function buildSources(group: SourceItem[]): CatalogItem["sources"] {
     const match = group.find((i) => i.source === src);
     if (match === undefined || seen.has(src)) continue;
     seen.add(src);
-    out.push({ source: src, trust: SOURCE_TRUST[src], rawId: match.rawId, seenAt: match.fetchedAt });
+    out.push({ source: src, trust: { ...SOURCE_TRUST[src] }, rawId: match.rawId, seenAt: match.fetchedAt });
   }
   return out;
 }
@@ -76,7 +76,7 @@ function resolveGroup(group: SourceItem[]): CatalogItem {
     tags: [...new Set(group.flatMap((i) => i.tags))].sort(),
     installSpec,
     sources,
-    bestTrust: bestTrust(sources),
+    bestTrust: { ...bestTrust(sources) },
   };
 }
 

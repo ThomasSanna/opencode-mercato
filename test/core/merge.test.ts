@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { SourceItem } from "../../src/core/model";
 import { canonicalKey, mergeCatalog, normalizeRepoUrl } from "../../src/core/merge";
+import { SOURCE_TRUST } from "../../src/core/trust";
 
 const item = (over: Partial<SourceItem>): SourceItem => ({
   source: "cafe", rawId: "r", kind: "plugin", name: "N", description: "D",
@@ -74,5 +75,15 @@ describe("mergeCatalog", () => {
       item({ source: "cafe", rawId: "a", name: "Alpha", repoUrl: "https://github.com/me/a" }),
     ]);
     expect(merged.map((m) => m.name)).toEqual(["Beta", "Alpha"]);
+  });
+
+  test("merged trust values do not alias the global constants", () => {
+    const merged = mergeCatalog([
+      item({ source: "cafe", repoUrl: "https://github.com/me/p1" }),
+    ]);
+    const m = merged[0]!;
+    expect(m.bestTrust).toEqual({ level: "high", score: 30 });
+    expect(m.bestTrust).not.toBe(SOURCE_TRUST.cafe);
+    expect(m.sources[0]!.trust).not.toBe(SOURCE_TRUST.cafe);
   });
 });
