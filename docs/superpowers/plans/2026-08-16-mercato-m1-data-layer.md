@@ -249,8 +249,8 @@ Create `test/core/trust.test.ts`:
 
 ```ts
 import { describe, expect, test } from "bun:test";
-import type { SourceId, SourceProvenance } from "../src/core/model";
-import { SOURCE_TRUST, bestTrust } from "../src/core/trust";
+import type { SourceId, SourceProvenance } from "../../src/core/model";
+import { SOURCE_TRUST, bestTrust } from "../../src/core/trust";
 
 describe("SOURCE_TRUST", () => {
   test("fixed values match spec §5 (30/20/15)", () => {
@@ -272,7 +272,7 @@ describe("bestTrust", () => {
   });
 
   test("ties keep the first occurrence", () => {
-    expect(bestTrust([prov("ecosystem", 15, "medium"), prov("awesome", 20, "medium")]))
+    expect(bestTrust([prov("ecosystem", 20, "medium"), prov("awesome", 20, "medium")]))
       .toEqual({ level: "medium", score: 20 });
   });
 
@@ -366,7 +366,7 @@ import {
   normalizeCafe,
   normalizeEcosystem,
   normalizeSource,
-} from "../src/core/normalize";
+} from "../../src/core/normalize";
 
 const CAFE_RAW = {
   status: "success",
@@ -694,8 +694,8 @@ Create `test/core/merge.test.ts`:
 
 ```ts
 import { describe, expect, test } from "bun:test";
-import type { SourceItem } from "../src/core/model";
-import { canonicalKey, mergeCatalog, normalizeRepoUrl } from "../src/core/merge";
+import type { SourceItem } from "../../src/core/model";
+import { canonicalKey, mergeCatalog, normalizeRepoUrl } from "../../src/core/merge";
 
 const item = (over: Partial<SourceItem>): SourceItem => ({
   source: "cafe", rawId: "r", kind: "plugin", name: "N", description: "D",
@@ -1166,7 +1166,7 @@ Create `test/adapters/npm.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, test } from "bun:test";
-import { npmInfo } from "../src/adapters/npm";
+import { npmInfo } from "../../src/adapters/npm";
 
 const originalFetch = globalThis.fetch;
 let capturedUrl = "";
@@ -1341,8 +1341,8 @@ import {
   isFresh,
   loadCache,
   saveCache,
-} from "../src/adapters/cache";
-import type { CacheShape } from "../src/adapters/cache";
+} from "../../src/adapters/cache";
+import type { CacheShape } from "../../src/adapters/cache";
 
 const dir = mkdtempSync(join(tmpdir(), "mercato-cache-"));
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
@@ -1549,9 +1549,9 @@ import { afterAll, describe, expect, test } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { SourceAdapter, SourceId, SourceRaw } from "../src/core/model";
-import { loadCache } from "../src/adapters/cache";
-import { refreshCatalog } from "../src/core/aggregate";
+import type { SourceAdapter, SourceId, SourceRaw } from "../../src/core/model";
+import { loadCache } from "../../src/adapters/cache";
+import { refreshCatalog } from "../../src/core/aggregate";
 
 const dir = mkdtempSync(join(tmpdir(), "mercato-aggregate-"));
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
