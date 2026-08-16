@@ -20,7 +20,13 @@ export function normalizeRepoUrl(url: string): string {
 
 /** Merge key: normalized repoUrl, else npm name, else name@source (spec §4). */
 export function canonicalKey(item: SourceItem): string {
-  if (item.repoUrl !== null) return normalizeRepoUrl(item.repoUrl);
+  if (item.repoUrl !== null) {
+    try {
+      return normalizeRepoUrl(item.repoUrl);
+    } catch {
+      // malformed URL → fall through to npm/name key (never brick the merge)
+    }
+  }
   if (item.npmSpec !== null) return `npm:${item.npmSpec.toLowerCase()}`;
   return `${item.name.toLowerCase()}@${item.source}`;
 }

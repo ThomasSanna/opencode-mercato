@@ -8,9 +8,11 @@ import { refreshCatalog } from "../../src/core/aggregate";
 
 const dir = mkdtempSync(join(tmpdir(), "mercato-aggregate-"));
 const emptyDir = mkdtempSync(join(tmpdir(), "mercato-aggregate-empty-"));
+const malformedDir = mkdtempSync(join(tmpdir(), "mercato-aggregate-malformed-"));
 afterAll(() => {
   rmSync(dir, { recursive: true, force: true });
   rmSync(emptyDir, { recursive: true, force: true });
+  rmSync(malformedDir, { recursive: true, force: true });
 });
 
 const fake = (id: SourceId, payload: unknown, fail = false): SourceAdapter => ({
@@ -48,6 +50,14 @@ const ECOSYSTEM = `## Plugins
 | [Agentic](https://github.com/me/agentic) | AG2 |
 `;
 
+const CAFE_MALFORMED = {
+  status: "success",
+  value: [
+    { _id: "c1", type: "plugin", productId: "p1", displayName: "P One", description: "A", repoUrl: "https://github.com/me/p1", tags: ["x"] },
+    { _id: "cBROKEN", type: "plugin", productId: "pb", displayName: "P Broken", description: "B", repoUrl: "https://foo bar.com" },
+  ],
+};
+
 describe("refreshCatalog", () => {
   test("full success: merges, persists, reports per-source meta", async () => {
     const res = await refreshCatalog([fake("cafe", CAFE), fake("awesome", AWESOME), fake("ecosystem", ECOSYSTEM)], dir);
@@ -77,5 +87,14 @@ describe("refreshCatalog", () => {
     expect(res.sourceMeta.cafe.lastError).toBe("boom-cafe");
     const cached = loadCache(emptyDir)!;
     expect(cached.items).toEqual([]);
+  });
+
+  test("malformed repoUrl in one source does not break the refresh", async () => {
+    const res = await refreshCatalog([fake("cafe", CAFE_MALFORMED), fake("awesome", AWESOME), fake("ecosystem", ECOSYSTEM)], malformedDir);
+    const broken = res.catalog.items.find((i) => i.name === "P Broken");
+    expect(broken).toBeDefined();
+    expect(broken!.id).toBe("p broken@cafe"); // falls back to name@source key
+    expect(res.catalog.items.find((i) => i.repoUrl === "https://github.com/me/p1")).toBeDefined();
+    expect(loadCache(malformedDir)).not.toBeNull();
   });
 });

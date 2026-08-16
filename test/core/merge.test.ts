@@ -61,6 +61,16 @@ describe("mergeCatalog", () => {
     expect(mergeCatalog(items)).toHaveLength(4);
   });
 
+  test("malformed repoUrl falls back to the npm/name key without throwing", () => {
+    const merged = mergeCatalog([
+      item({ source: "cafe", rawId: "bad", name: "Bad", repoUrl: "foo bar" }),
+      item({ source: "cafe", rawId: "good", name: "Good", repoUrl: "https://github.com/me/good" }),
+    ]);
+    expect(merged).toHaveLength(2);
+    expect(merged.find((m) => m.name === "Bad")!.id).toBe("bad@cafe");
+    expect(merged.find((m) => m.name === "Good")!.id).toBe("https://github.com/me/good");
+  });
+
   test("description takes the longest", () => {
     const merged = mergeCatalog([
       item({ source: "cafe", description: "Short", repoUrl: "https://github.com/me/x" }),
