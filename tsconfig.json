@@ -11,6 +11,7 @@
     "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@opentui/solid",
+    "resolveJsonModule": true,
     "types": ["node", "bun"]
   },
   "include": ["src", "test"]

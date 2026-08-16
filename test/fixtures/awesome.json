@@ -1,0 +1,204 @@
+[
+  {
+    "productId": "agentic",
+    "type": "agents",
+    "displayName": "Agentic",
+    "repoUrl": "https://github.com/Cluster444/agentic",
+    "tagline": "Modular AI agents",
+    "description": "Modular AI agents and commands for structured software development with opencode.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "claude-subagents",
+    "type": "agents",
+    "displayName": "Claude Subagents",
+    "repoUrl": "https://github.com/VoltAgent/awesome-claude-code-subagents",
+    "tagline": "Claude Code subagents",
+    "description": "Comprehensive reference repository for production-ready Claude Code subagents.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "deliberation",
+    "type": "agents",
+    "displayName": "deliberation",
+    "repoUrl": "https://github.com/antonbabenko/deliberation",
+    "tagline": "Ask GPT, Gemini, Grok, or OpenRouter for a second opinion or a fix, as expert subagents over MCP",
+    "description": "Get a delegated second opinion or an actual fix from GPT (Codex), Gemini, Grok (xAI), or OpenRouter. Seven expert subagents - Architect, Plan Reviewer, Scope Analyst, Code Reviewer, Security Analyst, Researcher, and Debugger - plus the ask-gpt, ask-gemini, ask-grok, ask-openrouter, ask-all, and consensus commands. Each one can advise (read-only) or implement. ask-all asks every model at once and compares the answers; consensus runs an arbiter loop until the models agree.",
+    "scope": [
+      "global",
+      "project"
+    ],
+    "tags": [
+      "mcp",
+      "subagents",
+      "second-opinion",
+      "code-review",
+      "multi-model"
+    ]
+  },
+  {
+    "productId": "gem-team",
+    "type": "agents",
+    "displayName": "Gem Team",
+    "repoUrl": "https://github.com/mubaidr/gem-team",
+    "tagline": "Self-Learning Multi-agent orchestration harness for spec-driven development and automated verification.",
+    "description": "Self-Learning Multi-agent orchestration harness for spec-driven development and automated verification.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "nerv",
+    "type": "agents",
+    "displayName": "NERV",
+    "repoUrl": "https://github.com/juanmanueldaza/nerv",
+    "tagline": "Invisible engineering infrastructure for AI agents",
+    "description": "Spec-Driven Development pipeline, A2A task delegation hub, persistent semantic memory (MAGI), and 9 specialized subagents for OpenCode. Scaffolds 45+ files via `nerv init` including SDD skills, slash commands, MCP servers, and lifecycle plugins.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "opencode-agents",
+    "type": "agents",
+    "displayName": "Opencode Agents",
+    "repoUrl": "https://github.com/darrenhinde/opencode-agents",
+    "tagline": "Enhanced workflows",
+    "description": "A set of opencode configurations, prompts, agents, and plugins for enhanced development workflows.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "opencode-redstone",
+    "type": "agents",
+    "displayName": "Redstone",
+    "repoUrl": "https://github.com/BackGwa/Redstone",
+    "tagline": "AI-built Minecraft plugins",
+    "description": "an Opencode agent that simplifies Minecraft plugin development and deployment.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "python-agent",
+    "type": "agents",
+    "displayName": "Python Expert Agent for OpenCode",
+    "repoUrl": "https://github.com/amrahman90/python-expert-agent",
+    "tagline": "Python Expert Agent toolkit for OpenCode with subagents and skills",
+    "description": "A custom configurable agent toolkit includes 1 Primary Custom Agent python-expert with intelligent skill loading, Predefined Specialized Subagents for Code generation, review, testing, and exploration, On-Demand Skills for Python development projects, Context Files for Standards, patterns, and security guidelines.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "server-manager",
+    "type": "agents",
+    "displayName": "server-manager",
+    "repoUrl": "https://github.com/workdocyeye/server-manager",
+    "tagline": "Non-blocking background server management — start, track, and stop local dev servers without blocking your AI session.",
+    "description": "Start, track, and stop local dev servers in the background — without blocking your AI conversation. Supports Node.js, Python, Go, .NET, Java, Rust, PHP and any framework that runs a dev server. JSON state persistence, per-project log files, HTTP health checks, and log tail/grep for debugging.",
+    "scope": [
+      "global",
+      "project"
+    ],
+    "tags": [
+      "server",
+      "devops",
+      "management",
+      "powershell",
+      "windows"
+    ],
+    "homepageUrl": "https://github.com/workdocyeye/server-manager",
+    "installation": "Download the entire `server-manager/` folder into your AI coding tool's skills directory:\n- OpenCode: `~/.config/opencode/skills/server-manager/`\n- Claude Code: `~/.claude/skills/server-manager/`\n- Project-level: `.opencode/skills/` or `.claude/skills/` in your project root\n"
+  },
+  {
+    "productId": "agent-memory",
+    "type": "plugins",
+    "displayName": "Agent Memory",
+    "repoUrl": "https://github.com/joshuadavidthomas/opencode-agent-memory",
+    "tagline": "Letta-inspired memory",
+    "description": "Gives the agent persistent, self-editable memory blocks inspired by Letta agents.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "agent-skills-jdt",
+    "type": "plugins",
+    "displayName": "Agent Skills (JDT)",
+    "repoUrl": "https://github.com/joshuadavidthomas/opencode-agent-skills",
+    "tagline": "Dynamic skills loader",
+    "description": "Dynamic skills loader that discovers skills from project, user, and plugin directories.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "antigravity-auth",
+    "type": "plugins",
+    "displayName": "Antigravity Auth",
+    "repoUrl": "https://github.com/NoeFabris/opencode-antigravity-auth",
+    "tagline": "Google Antigravity models",
+    "description": "Use Gemini and Anthropic models for free via Google Antigravity IDE authentication.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "agent-dotfiles",
+    "type": "projects",
+    "displayName": "agent-dotfiles",
+    "repoUrl": "https://github.com/saqibameen/agent-dotfiles",
+    "tagline": "Write AI coding rules once, sync to every agent",
+    "description": "Write AI coding rules once, sync to every agent. Supports Command Code, Claude Code, Cursor, Copilot, Codex, and OpenCode.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  },
+  {
+    "productId": "akephalos",
+    "type": "resources",
+    "displayName": "Akephalos",
+    "repoUrl": "https://github.com/sunnja69/akephalos",
+    "tagline": "Local-first markdown passport for portable agent context and memory",
+    "description": "A local-first, markdown-first `.akephalos` passport for portable agent preferences, tool notes, rules, project context, and durable memories. It uses plain files and Git so MCP-capable coding-agent workflows can inspect and carry context across tools and machines without hosted sync.",
+    "scope": [
+      "project"
+    ],
+    "tags": [
+      "mcp-server",
+      "memory",
+      "context",
+      "local-first",
+      "markdown"
+    ]
+  },
+  {
+    "productId": "ayu-dark",
+    "type": "themes",
+    "displayName": "Ayu Dark",
+    "repoUrl": "https://github.com/postrednik/opencode-ayu-theme",
+    "tagline": "Port of the popular Ayu Dark color scheme with golden yellow accent.",
+    "description": "Port of the popular Ayu Dark color scheme with golden yellow accent.",
+    "scope": [
+      "global"
+    ],
+    "tags": []
+  }
+]
