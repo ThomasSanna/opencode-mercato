@@ -7,7 +7,7 @@ export interface SourceProvenance {
   trust: Trust;
   rawId: string;
   seenAt: number;
-}
+} 
 export interface CatalogItem {
   id: string;
   kind: Kind;
