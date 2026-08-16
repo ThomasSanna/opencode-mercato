@@ -22,11 +22,15 @@ function groupBySource(items: SourceItem[]): Partial<Record<SourceId, SourceItem
  * Fetch every source (sequentially — three sources, no burst), normalize and
  * merge. A failing source keeps its previously cached items and records the
  * error; the others merge fresh (spec §9). Always persists atomically.
+ * `fetchedAt` records the last refresh in which at least one source
+ * succeeded; `stale` flags a refresh in which any source failed (spec §6).
  */
 export async function refreshCatalog(adapters: readonly SourceAdapter[], dir?: string): Promise<AggregateResult> {
   const prev = loadCache(dir);
   const fresh: SourceItem[] = [];
   const sourceMeta = emptyCache().sourceMeta;
+  let anySourceFailed = false;
+  let anySourceSucceeded = false;
   for (const adapter of adapters) {
     const src = adapter.id;
     try {
@@ -34,7 +38,9 @@ export async function refreshCatalog(adapters: readonly SourceAdapter[], dir?: s
       const items = normalizeSource(raw);
       fresh.push(...items);
       sourceMeta[src] = { fetchedAt: raw.fetchedAt, lastError: null, itemCount: items.length };
+      anySourceSucceeded = true;
     } catch (err) {
+      anySourceFailed = true;
       const kept = prev?.sourceItems[src] ?? [];
       fresh.push(...kept);
       sourceMeta[src] = {
@@ -45,7 +51,8 @@ export async function refreshCatalog(adapters: readonly SourceAdapter[], dir?: s
     }
   }
   const items: CatalogItem[] = mergeCatalog(fresh);
-  const cache: CacheShape = { ...emptyCache(), fetchedAt: Date.now(), items, sourceItems: groupBySource(fresh), sourceMeta, stale: false };
+  const fetchedAt = anySourceSucceeded ? Date.now() : (prev?.fetchedAt ?? null);
+  const cache: CacheShape = { ...emptyCache(), fetchedAt, items, sourceItems: groupBySource(fresh), sourceMeta, stale: anySourceFailed };
   saveCache(cache, dir);
-  return { catalog: { version: 1, items }, sourceMeta, stale: false };
+  return { catalog: { version: 1, items }, sourceMeta, stale: anySourceFailed };
 }

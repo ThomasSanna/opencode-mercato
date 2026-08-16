@@ -77,6 +77,7 @@ describe("refreshCatalog", () => {
     const res2 = await refreshCatalog([fake("cafe", CAFE, true), fake("awesome", AWESOME), fake("ecosystem", ECOSYSTEM)], dir);
     expect(res2.sourceMeta.cafe.lastError).toBe("boom-cafe");
     expect(res2.sourceMeta.cafe.itemCount).toBe(2); // kept from previous run
+    expect(res2.stale).toBe(true);
     const p1 = res2.catalog.items.find((i) => i.repoUrl === "https://github.com/me/p1")!;
     expect(p1.sources.map((s) => s.source)).toEqual(["cafe", "awesome", "ecosystem"]);
   });
@@ -96,5 +97,26 @@ describe("refreshCatalog", () => {
     expect(broken!.id).toBe("p broken@cafe"); // falls back to name@source key
     expect(res.catalog.items.find((i) => i.repoUrl === "https://github.com/me/p1")).toBeDefined();
     expect(loadCache(malformedDir)).not.toBeNull();
+  });
+
+  test("all sources fail with prior cache: stale, fetchedAt preserved, items kept", async () => {
+    await refreshCatalog([fake("cafe", CAFE), fake("awesome", AWESOME), fake("ecosystem", ECOSYSTEM)], dir);
+    const prevFetchedAt = loadCache(dir)!.fetchedAt;
+    const res = await refreshCatalog([fake("cafe", {}, true), fake("awesome", {}, true), fake("ecosystem", {}, true)], dir);
+    expect(res.stale).toBe(true);
+    expect(loadCache(dir)!.fetchedAt).toBe(prevFetchedAt); // no successful fetch → keep last good fetchedAt
+    expect(res.catalog.items).toHaveLength(4); // previous items retained
+    const p1 = res.catalog.items.find((i) => i.repoUrl === "https://github.com/me/p1")!;
+    expect(p1.sources.map((s) => s.source)).toEqual(["cafe", "awesome", "ecosystem"]);
+    expect(res.sourceMeta.cafe.lastError).toBe("boom-cafe");
+    expect(res.sourceMeta.awesome.lastError).toBe("boom-awesome");
+    expect(res.sourceMeta.ecosystem.lastError).toBe("boom-ecosystem");
+  });
+
+  test("full success resets stale to false and updates fetchedAt", async () => {
+    const prevFetchedAt = loadCache(dir)!.fetchedAt!;
+    const res = await refreshCatalog([fake("cafe", CAFE), fake("awesome", AWESOME), fake("ecosystem", ECOSYSTEM)], dir);
+    expect(res.stale).toBe(false);
+    expect(loadCache(dir)!.fetchedAt).toBeGreaterThanOrEqual(prevFetchedAt);
   });
 });
