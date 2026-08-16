@@ -1,0 +1,43 @@
+{
+  "name": "opencode-mercato",
+  "version": "0.1.0",
+  "description": "Mercato — the OpenCode V2 marketplace for everything: plugins, MCP servers, skills, themes, and agents, inside the TUI",
+  "type": "module",
+  "main": "./src/server.ts",
+  "exports": {
+    ".": "./src/server.ts",
+    "./server": "./src/server.ts",
+    "./tui": "./src/tui.tsx"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "engines": {
+    "opencode": ">=2.0.0-0"
+  },
+  "keywords": ["opencode", "opencode-plugin", "marketplace", "tui", "plugins", "mcp", "skills", "themes", "agents", "bun", "typescript"],
+  "license": "MIT",
+  "author": "ThomasSanna",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThomasSanna/opencode-mercato.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ThomasSanna/opencode-mercato/issues"
+  },
+  "homepage": "https://github.com/ThomasSanna/opencode-mercato#readme",
+  "dependencies": {
+    "@opencode-ai/client": "0.0.0-next-17444",
+    "@opencode-ai/plugin": "0.0.0-next-17444",
+    "@opentui/solid": "^0.5.3",
+    "comment-json": "^4.2.5",
+    "solid-js": "^1.9.14"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.2"
+  }
+}
