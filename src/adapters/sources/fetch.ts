@@ -4,7 +4,9 @@ export async function fetchWithTimeout(url: string, init: RequestInit = {}, time
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...init, signal: ctrl.signal });
+    // Combine the caller's signal with our timeout signal (Node 20+/bun).
+    const signal = init.signal != null ? AbortSignal.any([init.signal, ctrl.signal]) : ctrl.signal;
+    return await fetch(url, { ...init, signal });
   } finally {
     clearTimeout(timer);
   }
