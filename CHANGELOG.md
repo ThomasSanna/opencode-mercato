@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/ThomasSanna/opencode-mercato/compare/v0.2.0...v0.2.1) (2026-08-17)
+
+
+### Bug Fixes
+
+* strict-TS, SolidJS reactivity, scoped-pkg parsing, test coverage (v0.2.1) ([047f01a](https://github.com/ThomasSanna/opencode-mercato/commit/047f01ac65364268186713835fc8411c31af916e))
+
 ## [0.2.0](https://github.com/ThomasSanna/opencode-mercato/compare/v0.1.2...v0.2.0) (2026-08-17)
 
 
