@@ -5,3 +5,6 @@ coverage/
 .env
 .DS_Store
 *.tsbuildinfo
+.omo/
+.codegraph/
+.superpowers/
