@@ -57,39 +57,34 @@ export function SourceBadge(props: { source: SourceId }): JSX.Element {
 }
 
 export function StatusBadge(props: { status?: ItemStatus }): JSX.Element {
-  if (!props.status || props.status === "not-installed") {
-    return <></>;
-  }
-
-  const fg = props.status === "disabled" ? "#8b949e" : "#3fb950";
   return (
-    <text fg={fg}>
-      [{props.status}]
-    </text>
+    <>
+      {props.status && props.status !== "not-installed" ? (
+        <text fg={props.status === "disabled" ? "#8b949e" : "#3fb950"}>
+          [{props.status}]
+        </text>
+      ) : null}
+    </>
   );
 }
 
 export function UpdateBadge(props: { updateInfo?: ItemUpdateInfo }): JSX.Element {
-  if (
-    !props.updateInfo ||
-    props.updateInfo.updateState === "up-to-date" ||
-    props.updateInfo.updateState === "unknown"
-  ) {
-    return <></>;
-  }
-
-  if (props.updateInfo.updateState === "major-available") {
-    return (
-      <text fg="#f85149">
-        [major: {props.updateInfo.latestVersion ?? "update"}]
-      </text>
-    );
-  }
-
   return (
-    <text fg="#3fb950">
-      [{props.updateInfo.diffType ?? "update"}: {props.updateInfo.latestVersion ?? "new"}]
-    </text>
+    <>
+      {props.updateInfo &&
+      props.updateInfo.updateState !== "up-to-date" &&
+      props.updateInfo.updateState !== "unknown" ? (
+        props.updateInfo.updateState === "major-available" ? (
+          <text fg="#f85149">
+            [major: {props.updateInfo.latestVersion ?? "update"}]
+          </text>
+        ) : (
+          <text fg="#3fb950">
+            [{props.updateInfo.diffType ?? "update"}: {props.updateInfo.latestVersion ?? "new"}]
+          </text>
+        )
+      ) : null}
+    </>
   );
 }
 

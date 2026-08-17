@@ -38,6 +38,8 @@ import {
 import type { CatalogItem } from "../core/model";
 import { SETTING_DEFINITIONS, type MercatoSettings } from "../core/settings";
 import { getItemStatus } from "../core/status";
+import type { InstallPlan } from "../core/install-plan";
+import { extractPackageName } from "../core/versions";
 import type { CatalogUpdatesResult } from "../core/update-checker";
 import {
   handleRestoreBackupAction,
@@ -91,7 +93,7 @@ export function handleListKey(
       setFlow(openDetail(flow, selectedItem));
       if (selectedItem.kind === "plugin" || selectedItem.npmSpec) {
         const pkg = selectedItem.npmSpec
-          ? selectedItem.npmSpec.split("@")[0]!
+          ? extractPackageName(selectedItem.npmSpec)
           : selectedItem.id;
         void fetchNpmData(pkg);
       }
@@ -116,7 +118,7 @@ export function handleDetailKey(
   catalogUpdates: CatalogUpdatesResult,
   npmMap: Record<string, NpmInfo>,
   settings: MercatoSettings | undefined,
-  buildPlan: (item: CatalogItem, scope: InstallScope, ver?: string) => any,
+  buildPlan: (item: CatalogItem, scope: InstallScope, ver?: string) => InstallPlan,
   refreshSnapshot: () => void,
   refreshBackups?: () => void,
   showToast?: (msg: string) => void
@@ -157,7 +159,7 @@ export function handleDetailKey(
     }
     if (action.id === "versions") {
       const pkg = flow.item.npmSpec
-        ? flow.item.npmSpec.split("@")[0]!
+        ? extractPackageName(flow.item.npmSpec)
         : flow.item.id;
       const info = npmMap[pkg];
       const versions = info?.versions ? [...info.versions].reverse() : [];
@@ -166,11 +168,46 @@ export function handleDetailKey(
       return;
     }
     if (action.id === "uninstall") {
-      handleUninstallAction(flow.item, refreshSnapshot, refreshBackups, showToast);
+      const isLocal =
+        (Array.isArray(snapshot.localConfig.plugin) &&
+          snapshot.localConfig.plugin.some(
+            (p) =>
+              typeof p === "string" &&
+              extractPackageName(p) === extractPackageName(flow.item.npmSpec ?? flow.item.id)
+          )) ||
+        (snapshot.localConfig.mcp &&
+          typeof snapshot.localConfig.mcp === "object" &&
+          Object.prototype.hasOwnProperty.call(
+            snapshot.localConfig.mcp,
+            flow.item.name.toLowerCase()
+          ));
+      const targetScope: InstallScope = isLocal ? "local" : "global";
+      handleUninstallAction(
+        flow.item,
+        refreshSnapshot,
+        refreshBackups,
+        showToast,
+        targetScope
+      );
       return;
     }
     if (action.id === "enable" || action.id === "disable") {
-      handleToggleMcpAction(flow.item, action.id === "enable", refreshSnapshot, refreshBackups, showToast);
+      const isLocal =
+        snapshot.localConfig.mcp &&
+        typeof snapshot.localConfig.mcp === "object" &&
+        Object.prototype.hasOwnProperty.call(
+          snapshot.localConfig.mcp,
+          flow.item.name.toLowerCase()
+        );
+      const targetScope: InstallScope = isLocal ? "local" : "global";
+      handleToggleMcpAction(
+        flow.item,
+        action.id === "enable",
+        refreshSnapshot,
+        refreshBackups,
+        showToast,
+        targetScope
+      );
       return;
     }
     if (action.url) {

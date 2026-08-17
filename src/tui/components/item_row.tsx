@@ -13,8 +13,6 @@ export interface ItemRowProps {
 }
 
 export function ItemRow(props: ItemRowProps): JSX.Element {
-  const isSel = props.isSelected;
-
   return (
     <box
       flexDirection="column"
@@ -22,14 +20,14 @@ export function ItemRow(props: ItemRowProps): JSX.Element {
       paddingRight={1}
       paddingTop={0}
       paddingBottom={0}
-      backgroundColor={isSel ? "#161b22" : undefined}
+      backgroundColor={props.isSelected ? "#161b22" : undefined}
     >
       <box flexDirection="row" justifyContent="space-between">
         <box flexDirection="row" gap={1}>
-          <text fg={isSel ? "#58a6ff" : "#8b949e"}>
-            <b>{isSel ? "›" : " "}</b>
+          <text fg={props.isSelected ? "#58a6ff" : "#8b949e"}>
+            <b>{props.isSelected ? "›" : " "}</b>
           </text>
-          <text fg={isSel ? "#58a6ff" : "#f0f6fc"}>
+          <text fg={props.isSelected ? "#58a6ff" : "#f0f6fc"}>
             <b>{props.item.name}</b>
           </text>
           <KindBadge kind={props.item.kind} />

@@ -1,5 +1,6 @@
 /** @jsxImportSource @opentui/solid */
 import type { JSX } from "@opentui/solid";
+import { createMemo } from "solid-js";
 import { computeWindow } from "../../core/flow";
 import type { CatalogItem } from "../../core/model";
 import type { ItemUpdateInfo } from "../../core/versions";
@@ -20,18 +21,20 @@ export interface UpdatesScreenProps {
 }
 
 export function UpdatesScreen(props: UpdatesScreenProps): JSX.Element {
-  const windowSize = props.windowSize ?? 8;
-  const { start, end } = computeWindow(
-    props.selectedIndex,
-    props.updates.length,
-    windowSize
+  const win = createMemo(() =>
+    computeWindow(props.selectedIndex, props.updates.length, props.windowSize ?? 8)
   );
 
-  const visibleUpdates = props.updates.slice(start, end);
-  const safeCount = props.updates.filter((u) => u.info.autoEligible).length;
-  const majorCount = props.updates.filter(
-    (u) => u.info.updateState === "major-available"
-  ).length;
+  const visibleUpdates = createMemo(() =>
+    props.updates.slice(win().start, win().end)
+  );
+  const safeCount = createMemo(
+    () => props.updates.filter((u) => u.info.autoEligible).length
+  );
+  const majorCount = createMemo(
+    () =>
+      props.updates.filter((u) => u.info.updateState === "major-available").length
+  );
 
   return (
     <box flexDirection="column" padding={1} width="100%" gap={1}>
@@ -64,11 +67,11 @@ export function UpdatesScreen(props: UpdatesScreenProps): JSX.Element {
           Summary:
         </text>
         <text fg="#3fb950">
-          {safeCount} safe (patch/minor)
+          {safeCount()} safe (patch/minor)
         </text>
-        {majorCount > 0 && (
+        {majorCount() > 0 && (
           <text fg="#f85149">
-            • {majorCount} major (requires confirmation)
+            • {majorCount()} major (requires confirmation)
           </text>
         )}
       </box>
@@ -88,9 +91,9 @@ export function UpdatesScreen(props: UpdatesScreenProps): JSX.Element {
             </text>
           </box>
         ) : (
-          visibleUpdates.map((entry, idx) => {
-            const actualIndex = start + idx;
-            const isSelected = actualIndex === props.selectedIndex;
+          visibleUpdates().map((entry, idx) => {
+            const actualIndex = () => win().start + idx;
+            const isSelected = () => actualIndex() === props.selectedIndex;
 
             return (
               <box
@@ -98,14 +101,14 @@ export function UpdatesScreen(props: UpdatesScreenProps): JSX.Element {
                 justifyContent="space-between"
                 paddingLeft={1}
                 paddingRight={1}
-                backgroundColor={isSelected ? "#1f6feb22" : undefined}
+                backgroundColor={isSelected() ? "#1f6feb22" : undefined}
               >
                 <box flexDirection="row" gap={1}>
-                  <text fg={isSelected ? "#58a6ff" : "#8b949e"}>
-                    <b>{isSelected ? "›" : " "}</b>
+                  <text fg={isSelected() ? "#58a6ff" : "#8b949e"}>
+                    <b>{isSelected() ? "›" : " "}</b>
                   </text>
-                  <text fg={isSelected ? "#58a6ff" : "#f0f6fc"}>
-                    {isSelected ? <b>{entry.item.name}</b> : entry.item.name}
+                  <text fg={isSelected() ? "#58a6ff" : "#f0f6fc"}>
+                    {isSelected() ? <b>{entry.item.name}</b> : entry.item.name}
                   </text>
                   <KindBadge kind={entry.item.kind} />
                 </box>

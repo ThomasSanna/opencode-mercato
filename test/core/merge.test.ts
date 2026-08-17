@@ -12,6 +12,10 @@ describe("normalizeRepoUrl", () => {
   test("lowercases scheme/host, drops www and trailing slash", () => {
     expect(normalizeRepoUrl("HTTP://WWW.GitHub.com/Me/Repo/")).toBe("http://github.com/me/repo");
   });
+  test("drops .git suffix", () => {
+    expect(normalizeRepoUrl("https://github.com/me/repo.git")).toBe("https://github.com/me/repo");
+    expect(normalizeRepoUrl("https://github.com/me/repo.git/")).toBe("https://github.com/me/repo");
+  });
   test("adds https:// when the scheme is missing", () => {
     expect(normalizeRepoUrl("github.com/me/repo")).toBe("https://github.com/me/repo");
   });

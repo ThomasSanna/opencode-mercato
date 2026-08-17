@@ -32,8 +32,8 @@ Before starting any task, look at how the reference solves the same problem
 |---|---|
 | `src/` | Source code, organized by domain — one folder per feature. |
 | `src/index.ts` | Thin entry point. Exports only what the loader needs; no business logic. |
-| `src/server/` | Server plugin entry (`exports["./server"]`) — thin `Plugin.define` adapter. |
-| `src/tui/` | TUI plugin entry (`exports["./tui"]`) — dialog screens, palette, keymap. |
+| `src/server.ts` | Server plugin entry (`exports["./server"]`) — thin `Plugin.define` adapter. |
+| `src/tui.tsx` | TUI plugin entry (`exports["./tui"]`) — dialog screens, palette, keymap. |
 | `src/core/` | Pure, headless-testable logic (flow, versions, settings, integrity). |
 | `src/adapters/` | Thin SDK/IO adapters (sources, npm, install, config, cache) — one port each. |
 | `CREDITS.md` | Community data sources credited transparently (opencode.cafe, awesome-opencode, ecosystem docs). |

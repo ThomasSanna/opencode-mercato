@@ -1,5 +1,6 @@
 /** @jsxImportSource @opentui/solid */
 import type { JSX } from "@opentui/solid";
+import { createMemo } from "solid-js";
 import type { InstallPlan } from "../../core/install-plan";
 import { KindBadge, TrustBadge } from "../components/badge";
 import { KeymapHelp } from "../components/keymap_help";
@@ -32,7 +33,7 @@ export interface ConfirmScreenProps {
 }
 
 export function ConfirmScreen(props: ConfirmScreenProps): JSX.Element {
-  const actions = getConfirmActions(props.plan);
+  const actions = createMemo(() => getConfirmActions(props.plan));
 
   return (
     <box flexDirection="column" padding={1} width="100%" gap={1}>
@@ -173,20 +174,20 @@ export function ConfirmScreen(props: ConfirmScreenProps): JSX.Element {
         <text fg="#f0f6fc">
           <b>Actions:</b>
         </text>
-        {actions.map((act, idx) => {
-          const isSel = idx === props.selectedActionIndex;
+        {actions().map((act, idx) => {
+          const isSel = () => idx === props.selectedActionIndex;
           return (
             <box
               flexDirection="row"
               gap={1}
               paddingLeft={1}
-              backgroundColor={isSel ? "#1f6feb22" : undefined}
+              backgroundColor={isSel() ? "#1f6feb22" : undefined}
             >
-              <text fg={isSel ? "#58a6ff" : "#8b949e"}>
-                <b>{isSel ? "›" : " "}</b>
+              <text fg={isSel() ? "#58a6ff" : "#8b949e"}>
+                <b>{isSel() ? "›" : " "}</b>
               </text>
-              <text fg={isSel ? "#58a6ff" : "#f0f6fc"}>
-                {isSel ? <b>{act.label}</b> : act.label}
+              <text fg={isSel() ? "#58a6ff" : "#f0f6fc"}>
+                {isSel() ? <b>{act.label}</b> : act.label}
               </text>
             </box>
           );

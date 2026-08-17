@@ -1,6 +1,6 @@
 {
   "name": "opencode-mercato",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Mercato — the OpenCode V2 marketplace for everything: plugins, MCP servers, skills, themes, and agents, inside the TUI",
   "type": "module",
   "main": "./src/index.ts",

@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { readConfigFile } from "../../../src/adapters/config";
+import { type McpServerConfig, readConfigFile } from "../../../src/adapters/config";
 import {
   executeInstallPlan,
   executeToggleMcp,
@@ -87,7 +87,8 @@ describe("executor adapter", () => {
     expect(result.ok).toBe(true);
 
     const savedConfig = readConfigFile(configPath);
-    expect(savedConfig.mcp.postgres.command).toBe("npx");
+    const savedMcp = savedConfig.mcp as Record<string, McpServerConfig>;
+    expect(savedMcp["postgres"].command).toBe("npx");
 
     // Toggle enabled state
     const toggleRes = executeToggleMcp(item, false, "global", {
@@ -97,7 +98,8 @@ describe("executor adapter", () => {
     expect(toggleRes.ok).toBe(true);
 
     const updatedConfig = readConfigFile(configPath);
-    expect(updatedConfig.mcp.postgres.enabled).toBe(false);
+    const updatedMcp = updatedConfig.mcp as Record<string, McpServerConfig>;
+    expect(updatedMcp["postgres"].enabled).toBe(false);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

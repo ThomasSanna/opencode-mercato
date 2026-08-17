@@ -10,6 +10,7 @@ import {
   type WarningSeverity,
 } from "./generator";
 import type { CatalogItem, Kind, SourceId } from "./model";
+import { extractPackageName } from "./versions";
 
 export type {
   McpDefinition,
@@ -96,7 +97,7 @@ export function createInstallPlan(
 
   switch (item.kind) {
     case "plugin": {
-      const basePkg = item.npmSpec ? item.npmSpec.split("@")[0] : item.id;
+      const basePkg = item.npmSpec ? extractPackageName(item.npmSpec) : item.id;
       const pluginSpec = options.targetVersion
         ? `${basePkg}@${options.targetVersion}`
         : (item.npmSpec ?? item.id);
@@ -107,14 +108,14 @@ export function createInstallPlan(
       const hasPkg = currentPlugins.some(
         (p: unknown) =>
           typeof p === "string" &&
-          (p === pluginSpec || p.split("@")[0] === basePkg)
+          (p === pluginSpec || extractPackageName(p) === basePkg)
       );
 
       const existingSpec = hasPkg
         ? (currentPlugins.find(
             (p: unknown) =>
               typeof p === "string" &&
-              p.split("@")[0] === basePkg
+              extractPackageName(p) === basePkg
           ) as string)
         : undefined;
 

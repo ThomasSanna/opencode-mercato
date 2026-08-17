@@ -1,5 +1,6 @@
 /** @jsxImportSource @opentui/solid */
 import type { JSX } from "@opentui/solid";
+import { createMemo } from "solid-js";
 import { computeWindow } from "../../core/flow";
 import type { CatalogItem } from "../../core/model";
 import type { KindFilter } from "../../core/search";
@@ -26,14 +27,13 @@ export interface ListScreenProps {
 }
 
 export function ListScreen(props: ListScreenProps): JSX.Element {
-  const windowSize = props.windowSize ?? 8;
-  const { start, end } = computeWindow(
-    props.selectedIndex,
-    props.items.length,
-    windowSize
+  const win = createMemo(() =>
+    computeWindow(props.selectedIndex, props.items.length, props.windowSize ?? 8)
   );
 
-  const visibleItems = props.items.slice(start, end);
+  const visibleItems = createMemo(() =>
+    props.items.slice(win().start, win().end)
+  );
 
   return (
     <box flexDirection="column" padding={1} width="100%">
@@ -53,17 +53,17 @@ export function ListScreen(props: ListScreenProps): JSX.Element {
             </text>
           </box>
         ) : (
-          visibleItems.map((item, idx) => {
-            const actualIndex = start + idx;
-            const isSelected = actualIndex === props.selectedIndex;
-            const status = props.itemStatuses?.[item.id];
-            const updateInfo = props.itemUpdates?.[item.id];
+          visibleItems().map((item, idx) => {
+            const actualIndex = () => win().start + idx;
+            const isSelected = () => actualIndex() === props.selectedIndex;
+            const status = () => props.itemStatuses?.[item.id];
+            const updateInfo = () => props.itemUpdates?.[item.id];
             return (
               <ItemRow
                 item={item}
-                isSelected={isSelected}
-                status={status}
-                updateInfo={updateInfo}
+                isSelected={isSelected()}
+                status={status()}
+                updateInfo={updateInfo()}
               />
             );
           })

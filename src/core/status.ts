@@ -1,7 +1,7 @@
 import type { ConfigSnapshot } from "../adapters/snapshot";
 import { sanitizeIdentifier } from "./install-plan";
 import type { CatalogItem } from "./model";
-import type { ItemUpdateInfo } from "./versions";
+import { extractPackageName, type ItemUpdateInfo } from "./versions";
 
 export type ItemStatus = "not-installed" | "installed" | "enabled" | "disabled";
 
@@ -33,7 +33,7 @@ export function getItemStatus(
 
   switch (item.kind) {
     case "plugin": {
-      const pkgName = item.npmSpec ? item.npmSpec.split("@")[0] : item.id;
+      const pkgName = item.npmSpec ? extractPackageName(item.npmSpec) : item.id;
       const isInstalled = snapshot.installedPluginNames.some(
         (name) => name === pkgName || name === item.id || name === item.name
       );

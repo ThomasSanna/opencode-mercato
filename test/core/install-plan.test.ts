@@ -248,5 +248,29 @@ describe("install-plan core", () => {
     expect(plan.configDiffs[0].newValue).toBe("opencode-plugin-test@1.2.0");
     expect(plan.summary).toContain("Update plugin from \"opencode-plugin-test@1.0.0\" to \"opencode-plugin-test@1.2.0\"");
   });
+
+  it("handles scoped package names (@scope/pkg@ver) properly in install plans", () => {
+    const item = makeItem({
+      kind: "plugin",
+      name: "@scope/pkg",
+      npmSpec: "@scope/pkg@1.0.0",
+    });
+
+    const plan = createInstallPlan(
+      item,
+      "global",
+      {
+        targetConfigPath: "/global/opencode.json",
+        baseDir: "/global",
+        existingConfig: { plugin: ["@scope/pkg@1.0.0"] },
+      },
+      { targetVersion: "2.0.0" }
+    );
+
+    expect(plan.conflict).toBe("none");
+    expect(plan.configDiffs[0].action).toBe("replace");
+    expect(plan.configDiffs[0].oldValue).toBe("@scope/pkg@1.0.0");
+    expect(plan.configDiffs[0].newValue).toBe("@scope/pkg@2.0.0");
+  });
 });
 

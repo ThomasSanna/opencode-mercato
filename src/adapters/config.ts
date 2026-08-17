@@ -2,6 +2,12 @@ import * as commentJson from "comment-json";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
+export {
+  extractPackageName,
+  extractPackageVersion,
+} from "../core/versions";
+import { extractPackageName } from "../core/versions";
+
 export interface McpServerConfig {
   command: string;
   args?: string[];
@@ -11,7 +17,7 @@ export interface McpServerConfig {
   [key: string]: unknown;
 }
 
-export type OpenCodeConfig = Record<string, any>;
+export type OpenCodeConfig = Record<string, unknown>;
 
 /**
  * Reads an OpenCode config file (JSON or JSONC) and parses it preserving comments.
@@ -82,32 +88,6 @@ export function writeConfigFile(
   return { backupPath };
 }
 
-/**
- * Extracts base package name from an npm spec (e.g. "@scope/pkg@1.0.0" -> "@scope/pkg", "pkg@2.0" -> "pkg").
- */
-export function extractPackageName(spec: string): string {
-  const trimmed = spec.trim();
-  if (trimmed.startsWith("@")) {
-    const secondAt = trimmed.indexOf("@", 1);
-    return secondAt === -1 ? trimmed : trimmed.slice(0, secondAt);
-  }
-  const firstAt = trimmed.indexOf("@");
-  return firstAt === -1 ? trimmed : trimmed.slice(0, firstAt);
-}
-
-/**
- * Extracts pinned version from an npm spec (e.g. "@scope/pkg@1.0.0" -> "1.0.0", "pkg" -> null).
- */
-export function extractPackageVersion(spec: string): string | null {
-  const trimmed = spec.trim();
-  if (trimmed.startsWith("@")) {
-    const secondAt = trimmed.indexOf("@", 1);
-    return secondAt === -1 ? null : trimmed.slice(secondAt + 1) || null;
-  }
-  const firstAt = trimmed.indexOf("@");
-  return firstAt === -1 ? null : trimmed.slice(firstAt + 1) || null;
-}
-
 
 /**
  * Checks if a plugin spec or package is present in the config's plugin array.
@@ -119,8 +99,9 @@ export function isPluginInConfig(
   if (!Array.isArray(config.plugin)) {
     return false;
   }
+  const plugins = config.plugin as unknown[];
   const targetPkg = extractPackageName(pluginSpec);
-  return config.plugin.some((entry: unknown) => {
+  return plugins.some((entry) => {
     if (typeof entry !== "string") return false;
     return entry === pluginSpec || extractPackageName(entry) === targetPkg;
   });
@@ -137,15 +118,16 @@ export function addPluginToConfig(
     config.plugin = [];
   }
 
+  const plugins = config.plugin as unknown[];
   const targetPkg = extractPackageName(pluginSpec);
-  const existingIdx = config.plugin.findIndex((entry: unknown) => {
+  const existingIdx = plugins.findIndex((entry) => {
     return typeof entry === "string" && extractPackageName(entry) === targetPkg;
   });
 
   if (existingIdx >= 0) {
-    config.plugin[existingIdx] = pluginSpec;
+    plugins[existingIdx] = pluginSpec;
   } else {
-    config.plugin.push(pluginSpec);
+    plugins.push(pluginSpec);
   }
 }
 
@@ -160,14 +142,15 @@ export function removePluginFromConfig(
     return false;
   }
 
+  const plugins = config.plugin as unknown[];
   const targetPkg = extractPackageName(pluginSpec);
-  const initialLength = config.plugin.length;
-  config.plugin = config.plugin.filter((entry: unknown) => {
+  const initialLength = plugins.length;
+  config.plugin = plugins.filter((entry) => {
     if (typeof entry !== "string") return true;
     return entry !== pluginSpec && extractPackageName(entry) !== targetPkg;
   });
 
-  return config.plugin.length < initialLength;
+  return (config.plugin as unknown[]).length < initialLength;
 }
 
 /**
@@ -191,7 +174,8 @@ export function addMcpToConfig(
   if (!config.mcp || typeof config.mcp !== "object" || Array.isArray(config.mcp)) {
     config.mcp = {};
   }
-  config.mcp[name] = serverDef;
+  const mcp = config.mcp as Record<string, unknown>;
+  mcp[name] = serverDef;
 }
 
 /**
@@ -204,8 +188,9 @@ export function removeMcpFromConfig(
   if (!config.mcp || typeof config.mcp !== "object") {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(config.mcp, name)) {
-    delete config.mcp[name];
+  const mcp = config.mcp as Record<string, unknown>;
+  if (Object.prototype.hasOwnProperty.call(mcp, name)) {
+    delete mcp[name];
     return true;
   }
   return false;

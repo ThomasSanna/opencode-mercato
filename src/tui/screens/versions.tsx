@@ -1,5 +1,6 @@
 /** @jsxImportSource @opentui/solid */
 import type { JSX } from "@opentui/solid";
+import { createMemo } from "solid-js";
 import { computeWindow } from "../../core/flow";
 import type { CatalogItem } from "../../core/model";
 import { KindBadge } from "../components/badge";
@@ -15,14 +16,13 @@ export interface VersionsScreenProps {
 }
 
 export function VersionsScreen(props: VersionsScreenProps): JSX.Element {
-  const windowSize = props.windowSize ?? 8;
-  const { start, end } = computeWindow(
-    props.selectedIndex,
-    props.versions.length,
-    windowSize
+  const win = createMemo(() =>
+    computeWindow(props.selectedIndex, props.versions.length, props.windowSize ?? 8)
   );
 
-  const visibleVersions = props.versions.slice(start, end);
+  const visibleVersions = createMemo(() =>
+    props.versions.slice(win().start, win().end)
+  );
 
   return (
     <box flexDirection="column" padding={1} width="100%" gap={1}>
@@ -80,10 +80,10 @@ export function VersionsScreen(props: VersionsScreenProps): JSX.Element {
             </text>
           </box>
         ) : (
-          visibleVersions.map((version, idx) => {
-            const actualIndex = start + idx;
-            const isSelected = actualIndex === props.selectedIndex;
-            const isCurrent = version === props.currentVersion;
+          visibleVersions().map((version, idx) => {
+            const actualIndex = () => win().start + idx;
+            const isSelected = () => actualIndex() === props.selectedIndex;
+            const isCurrent = () => version === props.currentVersion;
 
             return (
               <box
@@ -91,21 +91,21 @@ export function VersionsScreen(props: VersionsScreenProps): JSX.Element {
                 justifyContent="space-between"
                 paddingLeft={1}
                 paddingRight={1}
-                backgroundColor={isSelected ? "#1f6feb22" : undefined}
+                backgroundColor={isSelected() ? "#1f6feb22" : undefined}
               >
                 <box flexDirection="row" gap={1}>
-                  <text fg={isSelected ? "#58a6ff" : "#8b949e"}>
-                    <b>{isSelected ? "›" : " "}</b>
+                  <text fg={isSelected() ? "#58a6ff" : "#8b949e"}>
+                    <b>{isSelected() ? "›" : " "}</b>
                   </text>
-                  <text fg={isSelected ? "#58a6ff" : isCurrent ? "#3fb950" : "#f0f6fc"}>
-                    {isSelected ? <b>v{version}</b> : `v${version}`}
+                  <text fg={isSelected() ? "#58a6ff" : isCurrent() ? "#3fb950" : "#f0f6fc"}>
+                    {isSelected() ? <b>v{version}</b> : `v${version}`}
                   </text>
-                  {isCurrent && (
+                  {isCurrent() && (
                     <text fg="#3fb950">
                       [current]
                     </text>
                   )}
-                  {actualIndex === 0 && (
+                  {actualIndex() === 0 && (
                     <text fg="#58a6ff">
                       [latest]
                     </text>
@@ -113,7 +113,7 @@ export function VersionsScreen(props: VersionsScreenProps): JSX.Element {
                 </box>
 
                 <text fg="#8b949e">
-                  {isCurrent ? "installed" : "available"}
+                  {isCurrent() ? "installed" : "available"}
                 </text>
               </box>
             );

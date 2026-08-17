@@ -12,20 +12,21 @@ export function KindTabs(props: KindTabsProps): JSX.Element {
   return (
     <box flexDirection="row" gap={2} paddingTop={1} paddingBottom={1}>
       {KIND_FILTER_LIST.map((kind) => {
-        const isActive = props.activeKind === kind;
         const label = KIND_TAB_LABELS[kind];
-        const count = props.counts?.[kind];
-        const text = count !== undefined ? `${label} (${count})` : label;
+        const text = () =>
+          props.counts?.[kind] !== undefined
+            ? `${label} (${props.counts[kind]})`
+            : label;
 
         return (
           <box>
-            {isActive ? (
+            {props.activeKind === kind ? (
               <text fg="#58a6ff">
-                <b>[{text}]</b>
+                <b>[{text()}]</b>
               </text>
             ) : (
               <text fg="#8b949e">
-                {" "}{text}{" "}
+                {" "}{text()}{" "}
               </text>
             )}
           </box>

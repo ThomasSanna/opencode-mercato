@@ -7,8 +7,6 @@ export interface SearchBarProps {
 }
 
 export function SearchBar(props: SearchBarProps): JSX.Element {
-  const hasQuery = props.query.length > 0;
-
   return (
     <box
       flexDirection="row"
@@ -20,7 +18,7 @@ export function SearchBar(props: SearchBarProps): JSX.Element {
       <text fg="#58a6ff">
         <b>{STRINGS.SEARCH_PROMPT}</b>{" "}
       </text>
-      {hasQuery ? (
+      {props.query.length > 0 ? (
         <text fg="#f0f6fc">
           {props.query}▍
         </text>

@@ -4,6 +4,7 @@ import type { CatalogItem, Kind } from "../../core/model";
 import {
   addMcpToConfig,
   addPluginToConfig,
+  type McpServerConfig,
   readConfigFile,
   removeMcpFromConfig,
   removePluginFromConfig,
@@ -78,7 +79,7 @@ export function executeInstallPlan(
           addPluginToConfig(config, diff.newValue as string);
         } else if (diff.path.startsWith("mcp.")) {
           const mcpKey = diff.path.slice(4);
-          addMcpToConfig(config, mcpKey, diff.newValue as any);
+          addMcpToConfig(config, mcpKey, diff.newValue as McpServerConfig);
         } else if (diff.path === "theme") {
           setThemeInConfig(config, diff.newValue as string);
         }
@@ -190,14 +191,17 @@ export function executeToggleMcp(
   const idName = sanitizeIdentifier(item.name);
   const config = readConfigFile(configPath);
 
-  if (config.mcp && typeof config.mcp === "object" && config.mcp[idName]) {
-    config.mcp[idName].enabled = enabled;
-    const res = writeConfigFile(configPath, config);
-    return {
-      ok: true,
-      message: `MCP server "${idName}" is now ${enabled ? "enabled" : "disabled"}.`,
-      backupPath: res.backupPath,
-    };
+  if (config.mcp && typeof config.mcp === "object" && !Array.isArray(config.mcp)) {
+    const mcpMap = config.mcp as Record<string, McpServerConfig>;
+    if (mcpMap[idName]) {
+      mcpMap[idName].enabled = enabled;
+      const res = writeConfigFile(configPath, config);
+      return {
+        ok: true,
+        message: `MCP server "${idName}" is now ${enabled ? "enabled" : "disabled"}.`,
+        backupPath: res.backupPath,
+      };
+    }
   }
 
   return {

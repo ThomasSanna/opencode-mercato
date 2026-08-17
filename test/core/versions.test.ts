@@ -5,6 +5,8 @@ import {
   checkItemUpdate,
   compareSemver,
   computeContentHash,
+  extractPackageName,
+  extractPackageVersion,
   getUpdateState,
   isAutoUpdateEligible,
   parseSemver,
@@ -113,7 +115,19 @@ describe("Versions & SemVer engine", () => {
     it("returns null for invalid semver strings", () => {
       expect(parseSemver("invalid")).toBeNull();
       expect(parseSemver("")).toBeNull();
-      expect(parseSemver(null as any)).toBeNull();
+      expect(parseSemver(null as unknown as string)).toBeNull();
+    });
+
+    it("extracts package names and versions accurately including scoped packages", () => {
+      expect(extractPackageName("@scope/pkg@1.0.0")).toBe("@scope/pkg");
+      expect(extractPackageName("@scope/pkg")).toBe("@scope/pkg");
+      expect(extractPackageName("pkg@2.0.0")).toBe("pkg");
+      expect(extractPackageName("pkg")).toBe("pkg");
+
+      expect(extractPackageVersion("@scope/pkg@1.0.0")).toBe("1.0.0");
+      expect(extractPackageVersion("@scope/pkg")).toBeNull();
+      expect(extractPackageVersion("pkg@2.0.0")).toBe("2.0.0");
+      expect(extractPackageVersion("pkg")).toBeNull();
     });
   });
 

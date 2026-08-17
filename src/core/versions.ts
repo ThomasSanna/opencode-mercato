@@ -278,3 +278,29 @@ export function checkItemUpdate(
     autoEligible,
   };
 }
+
+/**
+ * Extracts base package name from an npm spec (e.g. "@scope/pkg@1.0.0" -> "@scope/pkg", "pkg@2.0" -> "pkg").
+ */
+export function extractPackageName(spec: string): string {
+  const trimmed = spec.trim();
+  if (trimmed.startsWith("@")) {
+    const secondAt = trimmed.indexOf("@", 1);
+    return secondAt === -1 ? trimmed : trimmed.slice(0, secondAt);
+  }
+  const firstAt = trimmed.indexOf("@");
+  return firstAt === -1 ? trimmed : trimmed.slice(0, firstAt);
+}
+
+/**
+ * Extracts pinned version from an npm spec (e.g. "@scope/pkg@1.0.0" -> "1.0.0", "pkg" -> null).
+ */
+export function extractPackageVersion(spec: string): string | null {
+  const trimmed = spec.trim();
+  if (trimmed.startsWith("@")) {
+    const secondAt = trimmed.indexOf("@", 1);
+    return secondAt === -1 ? null : trimmed.slice(secondAt + 1) || null;
+  }
+  const firstAt = trimmed.indexOf("@");
+  return firstAt === -1 ? null : trimmed.slice(firstAt + 1) || null;
+}

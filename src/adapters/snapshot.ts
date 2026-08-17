@@ -69,7 +69,7 @@ export function loadConfigSnapshot(
     if (cfg.mcp && typeof cfg.mcp === "object" && !Array.isArray(cfg.mcp)) {
       for (const [key, val] of Object.entries(cfg.mcp)) {
         if (val && typeof val === "object") {
-          const obj = val as Record<string, any>;
+          const obj = val as Record<string, unknown>;
           configuredMcpServers[key.toLowerCase()] = {
             enabled: obj.enabled !== false,
             command: typeof obj.command === "string" ? obj.command : undefined,

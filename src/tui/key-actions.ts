@@ -5,6 +5,7 @@ import {
 } from "../adapters/install/executor";
 import { saveSettings } from "../adapters/settings";
 import { restoreBackup, type BackupEntry } from "../adapters/backups";
+import type { InstallScope } from "../adapters/paths";
 import type { ConfigSnapshot } from "../adapters/snapshot";
 import type { CatalogItem } from "../core/model";
 import {
@@ -18,9 +19,10 @@ export function handleUninstallAction(
   item: CatalogItem,
   refreshSnapshot: () => void,
   refreshBackups?: () => void,
-  showToast?: (msg: string) => void
+  showToast?: (msg: string) => void,
+  scope: InstallScope = "global"
 ): void {
-  const res = executeUninstall(item, "global");
+  const res = executeUninstall(item, scope);
   refreshSnapshot();
   refreshBackups?.();
   showToast?.(res.message);
@@ -31,9 +33,10 @@ export function handleToggleMcpAction(
   enable: boolean,
   refreshSnapshot: () => void,
   refreshBackups?: () => void,
-  showToast?: (msg: string) => void
+  showToast?: (msg: string) => void,
+  scope: InstallScope = "global"
 ): void {
-  const res = executeToggleMcp(item, enable, "global");
+  const res = executeToggleMcp(item, enable, scope);
   refreshSnapshot();
   refreshBackups?.();
   showToast?.(res.message);
@@ -51,10 +54,12 @@ export function handleToggleSettingAction(
   setSettings(next);
   try {
     saveSettings(next);
-  } catch {
-    // ignore
+    showToast?.(STRINGS.TOAST_SETTINGS_SAVED);
+  } catch (err) {
+    showToast?.(
+      `Failed to save settings: ${err instanceof Error ? err.message : String(err)}`
+    );
   }
-  showToast?.(STRINGS.TOAST_SETTINGS_SAVED);
 }
 
 export function handleRestoreBackupAction(

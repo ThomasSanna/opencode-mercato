@@ -11,7 +11,10 @@ export function normalizeRepoUrl(url: string): string {
   const parsed = new URL(u);
   parsed.protocol = parsed.protocol.toLowerCase();
   parsed.host = parsed.host.replace(/^www\./, "").toLowerCase();
-  parsed.pathname = parsed.pathname.replace(/\/+$/, "").toLowerCase();
+  parsed.pathname = parsed.pathname
+    .replace(/\/+$/, "")
+    .replace(/\.git$/i, "")
+    .toLowerCase();
   const params = [...new URLSearchParams(parsed.search).entries()].sort((a, b) => a[0].localeCompare(b[0]));
   parsed.search = params.length > 0 ? `?${params.map(([k, v]) => `${k}=${v}`).join("&")}` : "";
   parsed.hash = "";

@@ -11,6 +11,7 @@ import { getItemStatus } from "./status";
 import {
   checkItemUpdate,
   computeContentHash,
+  extractPackageName,
   type ItemUpdateInfo,
 } from "./versions";
 
@@ -43,7 +44,7 @@ export function evaluateCatalogUpdates(
     const idName = sanitizeIdentifier(item.name);
 
     if (item.kind === "plugin") {
-      const pkgName = item.npmSpec ? item.npmSpec.split("@")[0]! : item.id;
+      const pkgName = item.npmSpec ? extractPackageName(item.npmSpec) : item.id;
       const installedVersion = snapshot.installedPluginVersions[pkgName] ?? null;
       const npmData = npmVersionsMap[pkgName];
       const latestVersion = npmData ? npmData.latest : null;
