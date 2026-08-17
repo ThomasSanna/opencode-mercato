@@ -1,15 +1,22 @@
 import { Plugin } from "@opencode-ai/plugin/tui";
+import type { Context } from "@opencode-ai/plugin/tui/context";
+import { setupTui, openMercato } from "./tui/index";
 
-/**
- * opencode-mercato — TUI entry (OpenCode V2).
- *
- * Renders the Mercato dialog screens (list, detail, confirm, updates,
- * settings, restore). Presentation only; all decisions live in `src/core`.
- */
-export default Plugin.define({
+export { setupTui, openMercato };
+
+export const tui = (ctx: Context): void => {
+  setupTui(ctx);
+};
+
+const pluginDef = Plugin.define({
   id: "opencode-mercato",
-  setup: async (ctx) => {
-    // M2+: palette command, dialog screen loop, api.ui usage
-    void ctx;
+  setup: (ctx) => {
+    setupTui(ctx);
   },
+});
+
+export default Object.assign(tui, pluginDef, {
+  id: "opencode-mercato",
+  tui,
+  setup: (ctx: Context) => setupTui(ctx),
 });

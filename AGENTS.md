@@ -84,9 +84,12 @@ Before starting any task, look at how the reference solves the same problem
 
 ## 4. Guidelines
 
-OpenCode is a moving target — verify against the official docs before using an
-API, and prefer the docs over assumptions:
-
+- **Karpathy's guidelines.** Always read and adhere to Karpathy's guidelines (`karpathy-guidelines` skill) before writing, modifying, or refactoring code:
+  1. *Think Before Coding:* State assumptions explicitly, never assume, surface tradeoffs and simpler alternatives.
+  2. *Simplicity First:* Minimum code that solves the problem, nothing speculative, no single-use abstractions or unrequested configurability.
+  3. *Surgical Changes:* Touch only what you must, match existing style, clean up only your own orphans, never refactor adjacent working code.
+  4. *Goal-Driven Execution:* Define verifiable success criteria, write tests to reproduce/verify, iterate until confirmed.
+- **OpenCode is a moving target:** Verify against official docs before using an API, and prefer docs over assumptions.
 - **OpenCode V2:** https://opencode.ai/v2/docs/build/plugins,
   https://opencode.ai/v2/docs/api, https://opencode.ai/v2/docs/build
 - **V2 only.** Plugins in this repo target OpenCode V2 exclusively; V1 APIs

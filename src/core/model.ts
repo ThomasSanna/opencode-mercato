@@ -17,7 +17,7 @@ export interface CatalogItem {
   npmSpec: string | null;
   homepage: string | null;
   tags: string[];
-  installSpec: Record<SourceId, unknown>;
+  installSpec: Partial<Record<SourceId, unknown>>;
   sources: SourceProvenance[];
   bestTrust: Trust;
 }

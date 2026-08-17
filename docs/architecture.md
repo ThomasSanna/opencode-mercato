@@ -1,6 +1,6 @@
 # opencode-mercato — Architecture & Design
 
-> Status: **Draft for validation** · Date: 2026-08-16
+> Status: **Implemented (M0–M5 complete)** · Date: 2026-08-17
 > Applies the contract in `AGENTS.md`: strict TS, ports & adapters, thin entry,
 > no god files, tests mirror modules, **extremely lightweight** (zero runtime
 > deps beyond the pinned SDK), V2 only, English only.
